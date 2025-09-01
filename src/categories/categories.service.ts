@@ -9,7 +9,7 @@ export class CategoriesService {
   constructor(private readonly categoriesRepository: CategoriesRepository) {}
 
   async create(createCategoryDto: CreateCategoryDto): Promise<Category[]> {
-    return await this.categoriesRepository.create(createCategoryDto);
+    return await this.categoriesRepository.create(createCategoryDto.toEntity());
   }
 
   async findAll(): Promise<Category[]> {
@@ -26,7 +26,7 @@ export class CategoriesService {
 
   async update(id: number, updateCategoryDto: UpdateCategoryDto): Promise<Category | null> {
     const category = await this.findOne(id);
-    return await this.categoriesRepository.update(id, updateCategoryDto);
+    return await this.categoriesRepository.update(id, updateCategoryDto.toEntity());
   }
 
   async remove(id: number): Promise<void> {

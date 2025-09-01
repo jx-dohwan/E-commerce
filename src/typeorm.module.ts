@@ -11,6 +11,7 @@ import {
   addTransactionalDataSource,
 } from 'typeorm-transactional';
 import { Category } from './categories/entities/category.entity';
+import { Product } from './products/entities/product.entity';
 
 export class TypeOrmModule {
   private static instance?: DynamicModule;
@@ -30,7 +31,7 @@ export class TypeOrmModule {
             database: 'e-commerce',
             username: 'test',
             password: 'test',
-            entities: [Category],
+            entities: [Category, Product],
             namingStrategy: new SnakeNamingStrategy(),
             synchronize: true, // 테스트용 새로 다시 만들기 때문에 실제 서버에서는 사용하면 안됨
             logging: false,
@@ -38,11 +39,33 @@ export class TypeOrmModule {
 
           return options;
         },
-        async dataSourceFactory(options?: DataSourceOptions) {
-          if (!options) throw new Error('Invalid options passed');
 
-          return addTransactionalDataSource(new DataSource(options));
-        },
+        // 여기에 발생하는 에러가 있음 방어를 할 수 있어야함 
+        async dataSourceFactory(options?: DataSourceOptions) {
+            if (!options) throw new Error('Invalid options passed');
+          
+            const dataSource = new DataSource(options);
+          
+            // 이미 같은 이름의 DataSource가 등록되어 있으면 재사용
+            if (!dataSource.isInitialized) {
+              await dataSource.initialize();
+            }
+          
+            try {
+              return addTransactionalDataSource(dataSource);
+            } catch (e) {
+              if (e.message.includes('already added')) {
+                return dataSource; // 이미 등록된 경우 그냥 반환
+              }
+              throw e;
+            }
+          }
+          
+        // async dataSourceFactory(options?: DataSourceOptions) {
+        //   if (!options) throw new Error('Invalid options passed');
+
+        //   return addTransactionalDataSource(new DataSource(options));
+        // },
       });
     }
 

@@ -5,9 +5,9 @@ import { Category } from '../entities/category.entity';
 
 export class UpdateCategoryDto {
         @IsString()
-        @IsNotEmpty()
+        @IsOptional()
         @MaxLength(100)
-        name: string;
+        name?: string;
     
         @IsOptional()
         @IsString()
