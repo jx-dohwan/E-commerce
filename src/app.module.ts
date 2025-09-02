@@ -1,13 +1,47 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ProductsModule } from './products/products.module';
 import { CategoriesModule } from './categories/categories.module';
-import { TypeOrmModule } from './typeorm.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { EnhancedLoggerMiddleware } from './common/middleware/enhanced-logger.middleware';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import databaseConfig from './config/database.config';
+import appConfig from './config/app.config';
+import { Product } from './products/entities/product.entity';
+import { Category } from './categories/entities/category.entity';
 
 @Module({
-  imports: [ProductsModule, CategoriesModule, TypeOrmModule.forRoot()],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [databaseConfig, appConfig],
+      envFilePath: '.env',
+    }),
+
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        type: 'mysql',
+        host: configService.get<string>('database.host'),
+        port: configService.get<number>('database.port'),
+        username: configService.get<string>('database.username'),
+        password: configService.get<string>('database.password'),
+        database: configService.get<string>('database.database'),
+        entities: [Product, Category],
+        synchronize: configService.get<string>('app.nodeEnv') === 'development',
+        logging: configService.get<string>('app.nodeEnv') === 'development',
+      }),
+      inject: [ConfigService],
+    }),
+    ProductsModule,
+    CategoriesModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(EnhancedLoggerMiddleware).forRoutes('*');
+  }
+}
