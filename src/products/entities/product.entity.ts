@@ -23,4 +23,7 @@ export class Product extends BaseEntity {
     @ManyToOne(() => Category, (category) => category.products, {eager:true})
     @JoinColumn({name:'categoryId'})
     category: Category;
+
+    @RelationId((product: Product) => product.category)
+    readonly categoryId: number;
 }
