@@ -1,27 +1,30 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { AppConfig, Configurations, DBConfig, JwtConfig, MySqlDBConfig, RedisConfig } from 'src/constants/config';
+
 
 @Injectable()
 export class AppConfigService {
-  constructor(private configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService<Configurations>) {}
 
-  get isDevelopment(): boolean {
-    return this.configService.get<string>('app.nodeEnv') === 'development';
+  getAppConfig(): AppConfig {
+    return this.configService.getOrThrow('APP');
   }
 
-  get isProduction(): boolean {
-    return this.configService.get<string>('app.nodeEnv') === 'production';
+  getDBConfig(): DBConfig {
+    return this.configService.getOrThrow('DB')
   }
 
-  get jwtSecret(): string | undefined {
-    return this.configService.get<string>('app.jwtSecret');
+  getMySqlDBConfig(): MySqlDBConfig {
+    return this.configService.getOrThrow('MYSQL');
   }
 
-  get databaseConfig() {
-    return {
-        host: this.configService.get<string>('database.host'),
-        port: this.configService.get<number>('database.port'),
-        database: this.configService.get<string>('database.database'),
-    }
+  getRedisConfig(): RedisConfig {
+    return this.configService.getOrThrow('REDIS');
   }
+
+  getJwtConfig(): JwtConfig {
+    return this.configService.getOrThrow('JWT')
+  }
+
 }

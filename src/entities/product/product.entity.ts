@@ -1,6 +1,6 @@
-import { Category } from 'src/entities/category/category.entity';
 import { BaseEntity, UuidEntity } from 'src/core/database/base.entity';
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from 'typeorm';
+import { Category } from '../category/category.entity';
 
 @Entity('products')
 export class Product extends UuidEntity {

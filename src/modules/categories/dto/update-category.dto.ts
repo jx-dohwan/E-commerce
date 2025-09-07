@@ -1,8 +1,8 @@
 import { IsString, IsNotEmpty, IsOptional, IsBoolean, MaxLength } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 import { CreateCategoryDto } from './create-category.dto';
-import { Category } from '../../entities/category/category.entity';
 import { IsNullable } from 'src/core/decorator/isNullable.decorator';
+import { Category } from 'src/entities/category/category.entity';
 
 export class UpdateCategoryDto {
     @IsString()

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { BaseRepository } from 'src/common/repositories/base.repository';
-import { Product } from '../entities/product/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, LessThanOrEqual, Like, MoreThanOrEqual, Repository } from 'typeorm';
+import { Product } from 'src/entities/product/product.entity';
 
 @Injectable()
 export class ProductsRepository extends BaseRepository<Product> {
