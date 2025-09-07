@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CategoriesRepository } from './categories.repository';
-import { Category } from './entities/category.entity';
+import { Category } from '../entities/category/category.entity';
 
 @Injectable()
 export class CategoriesService {
@@ -16,7 +16,7 @@ export class CategoriesService {
     return await this.categoriesRepository.findAll();
   }
 
-  async findOne(id: number): Promise<Category> {
+  async findOne(id: Category['id']): Promise<Category> {
     const category = await this.categoriesRepository.findOne(id);
     if (!category) {
       throw new NotFoundException(`Category with ID ${id} not found`);
@@ -24,12 +24,12 @@ export class CategoriesService {
     return category;
   }
 
-  async update(id: number, updateCategoryDto: UpdateCategoryDto): Promise<Category | null> {
+  async update(id: Category['id'], updateCategoryDto: UpdateCategoryDto): Promise<Category | null> {
     const category = await this.findOne(id);
     return await this.categoriesRepository.update(id, updateCategoryDto.toEntity());
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: Category['id']): Promise<void> {
     await this.findOne(id);
     await this.categoriesRepository.remove(id);
   }

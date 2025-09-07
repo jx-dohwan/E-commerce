@@ -4,12 +4,12 @@ import { AppService } from './app.service';
 import { ProductsModule } from './products/products.module';
 import { CategoriesModule } from './categories/categories.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { EnhancedLoggerMiddleware } from './common/middleware/enhanced-logger.middleware';
+import { EnhancedLoggerMiddleware } from './core/middleware/enhanced-logger.middleware';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import databaseConfig from './config/database.config';
 import appConfig from './config/app.config';
-import { Product } from './products/entities/product.entity';
-import { Category } from './categories/entities/category.entity';
+import { Product } from './entities/product/product.entity';
+import { Category } from './entities/category/category.entity';
 
 @Module({
   imports: [

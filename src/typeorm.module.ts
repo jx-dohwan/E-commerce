@@ -10,8 +10,8 @@ import {
   initializeTransactionalContext,
   addTransactionalDataSource,
 } from 'typeorm-transactional';
-import { Category } from './categories/entities/category.entity';
-import { Product } from './products/entities/product.entity';
+import { Category } from './entities/category/category.entity';
+import { Product } from './entities/product/product.entity';
 
 export class TypeOrmModule {
   private static instance?: DynamicModule;

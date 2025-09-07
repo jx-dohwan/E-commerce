@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Category } from "./entities/category.entity";
+import { Category } from "../entities/category/category.entity";
 import { Like, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { BaseRepository } from "src/common/repositories/base.repository";
@@ -40,17 +40,7 @@ export class CategoriesRepository extends BaseRepository<Category> {
         });
     }
 
-    // 카테고리 이름 변경
-    async rename(id: number, newName: string): Promise<Category | null> {
-        const category = await this.findOne(id);
-        if(!category) return null;
 
-        const taken = await this.isNameTaken(newName);
-        if (taken && category.name !== newName) {
-            throw new Error('이미 존재하는 카테고리명입니다.');
-        }
-        return await this.update(id, {name: newName} as Partial<Category>);
-    }
 
     // 페이지네이션(오프셋 기반)
     async paginateCategories(

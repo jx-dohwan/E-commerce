@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { BaseRepository } from 'src/common/repositories/base.repository';
-import { Product } from './entities/product.entity';
+import { Product } from '../entities/product/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, LessThanOrEqual, Like, MoreThanOrEqual, Repository } from 'typeorm';
 
@@ -21,12 +21,6 @@ export class ProductsRepository extends BaseRepository<Product> {
     });
   }
 
-  // 카테고리별 상품 조회
-  async findByCategory(categoryId: number): Promise<Product[]> {
-    return await this.productsRepo.find({
-      where: { categoryId, isActive: true },
-    });
-  }
 
   // 가격 범위 검색
   async findByPriceRange(
@@ -63,20 +57,7 @@ export class ProductsRepository extends BaseRepository<Product> {
     });
   }
 
-  // 활성화 상태 토글
-  async toggleActive(id:number): Promise<Product | null> {
-    const product = await this.findOne(id);
-    if (!product) return null;
 
-    return await this.update(id,{isActive: !product.isActive} as Partial<Product>);
-  }
 
-  // 카테고리 변경
-  async moveToCategory(id: number, categoryId: number): Promise<Product | null> {
-    const product = await this.findOne(id);
-    if (!product) return null;
-
-    return await this.update(id, { categoryId } as Partial<Product>);
-  }
 
 }

@@ -1,9 +1,9 @@
 import {Repository, FindOptionsWhere, FindManyOptions} from "typeorm";
-import {BaseEntity} from "../entities/base.entity";
+import {BaseEntity, UuidEntity} from "../../core/database/base.entity";
 
 // abstract는 상속된 곳에서만 사용될 수 있는 부분인가?
 // T extends BaseEntity는 삭속 받을 수있는 타입은 baseEntity만 가능 하다는 뜻인가?
-export abstract class BaseRepository<T extends BaseEntity> { 
+export abstract class BaseRepository<T extends UuidEntity> { 
     protected repository: Repository<T>;
 
     constructor(repository: Repository<T>) {
@@ -22,7 +22,7 @@ export abstract class BaseRepository<T extends BaseEntity> {
         } as FindManyOptions<T>);
     }
 
-    async findOne(id: number): Promise<T | null> {
+    async findOne(id: T['id']): Promise<T | null> {
         return await this.repository.findOne({where:{id}} as any);
     }
 
@@ -31,12 +31,12 @@ export abstract class BaseRepository<T extends BaseEntity> {
         return await this.repository.find({where} as any);
     }
 
-    async update(id: number, updateData: Partial<T>): Promise<T | null> {
+    async update(id: T['id'], updateData: Partial<T>): Promise<T | null> {
         await this.repository.update(id, updateData as any);
         return await this.findOne(id);
     }
 
-    async remove(id: number): Promise<void> {
+    async remove(id: T['id']): Promise<void> {
         await this.repository.delete(id);
     }
 

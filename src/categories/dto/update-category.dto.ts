@@ -1,25 +1,23 @@
 import { IsString, IsNotEmpty, IsOptional, IsBoolean, MaxLength } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 import { CreateCategoryDto } from './create-category.dto';
-import { Category } from '../entities/category.entity';
+import { Category } from '../../entities/category/category.entity';
+import { IsNullable } from 'src/core/decorator/isNullable.decorator';
 
 export class UpdateCategoryDto {
-        @IsString()
-        @IsOptional()
-        @MaxLength(100)
-        name?: string;
-    
-        @IsOptional()
-        @IsString()
-        description?: string;
+    @IsString()
+    @MaxLength(200)
+    name: string
 
-        toEntity(): Partial<Category> {
-            const entity: Partial<Category> = {};
+    @IsNullable()
+    @IsString()
+    description: string | null;
 
-            if (this.name !== undefined) entity.name = this.name;
-            if (this.description !== undefined) entity.description = this.description
+    toEntity(): Partial<Category> {
+        return plainToInstance(Category, {
+            name: this.name,
+            description: this.description,
+        })
+    }
 
-            return entity;
-        }
-    
 }

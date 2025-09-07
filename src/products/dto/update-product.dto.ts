@@ -1,46 +1,35 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateProductDto } from './create-product.dto';
-import { IsBoolean, IsInt, IsNumber, IsOptional, IsString, MaxLength, Min } from 'class-validator';
-import { Type } from 'class-transformer';
-import { Product } from '../entities/product.entity';
+import { IsBoolean, IsInt, IsNumber, IsOptional, IsString, IsUUID, MaxLength, Min } from 'class-validator';
+import { plainToInstance, Type } from 'class-transformer';
+import { Product } from '../../entities/product/product.entity';
+import { IsNullable } from 'src/core/decorator/isNullable.decorator';
 
 export class UpdateProductDto {
-    @IsOptional()
     @IsString()
     @MaxLength(200)
-    name?: string;
+    name: string;
 
-    @IsOptional()
+    @IsNullable()
     @IsString()
-    description?: string;
+    description: string | null;
 
-    @IsOptional()
-    @IsInt()
-    @Min(1)
-    @Type(() => Number)
-    price?: number;
-
-    @IsOptional()
-    @IsInt()
+    @IsNumber()
     @Min(0)
-    @Type(() => Number)
-    stock?: number;
+    price: number;
 
+    @IsNumber()
+    @Min(0)
+    stock: number;
 
-    @IsOptional()
+    @IsUUID()
+    categoryId: string;
+
     @IsBoolean()
-    isActive?: boolean;
+    isActive: boolean;
 
     toEntity(): Partial<Product> {
-        const entity: Partial<Product> = {};
-
-        if (this.name !== undefined) entity.name = this.name;
-        if (this.description !== undefined) entity.description = this.description;
-        if (this.price !== undefined) entity.price = this.price;
-        if (this.stock !== undefined) entity.stock = this.stock;
-        if (this.isActive !== undefined) entity.isActive = this.isActive;
-
-        return entity;
-
+        return plainToInstance(Product, this);
     }
+ 
 }
