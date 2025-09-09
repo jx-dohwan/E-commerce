@@ -21,3 +21,33 @@
 ## 6. Repository와 Service 구분
 - Repository와 Service의 로직이 비슷해 보이는데, 굳이 나눠서 사용하는 이유가 있나요?  
 - 단순 CRUD가 아니라 도메인 복잡도가 올라갔을 때 어떤 장점이 있는지 궁금합니다.  
+
+# 3주차 과제 질문 리스트
+
+## 1. 인증 구현
+- 인증을 구현하였으나 아직 구동 원리가 머릿속으로 그려지지가 않는다.
+
+## 2. 인가 구현
+- 인가를 서비스에도 따로 적용 해야되나, GPT한테 물어보니 service에도 뭔가를 적용하기는 하던데 잘 이해는 안된다. 아래가 그 코드이다. 
+
+```
+  async remove(postId:Post['id'], requester: {sub: string; role: Role}) {
+    const post = await this.postsRepository.findOne(postId);
+    if (!post) throw new NotFoundException('post not found');
+
+    const isOwner = post.user?.id === requester.sub;
+    const isAdmin = requester.role === Role.Admin;
+
+    if (!isOwner && !isAdmin) throw new ForbiddenException('not allowed');
+
+    await this.postsRepository.remove(postId);
+    return {ok: true};
+  }
+```
+
+### 3. 전역 예외 처리
+- 모든 예외를 HTTP 응답 형태로 변환하여서 서버 로그에는 요청 정보와 스택 기록을 저장하였는데, 더 필요한 부분이 있을까?
+
+### 4. 전체 프로젝트의 프로세스 흐름
+- 전체 프로젝트의 프로세스 흐름을 아직 잘 모르겠다.
+- 멘토님의 코드를 보니 객체지향으로 잘 구현해 놓으셨는데, 프로세스가 머릿속에 그려지지 않는다.

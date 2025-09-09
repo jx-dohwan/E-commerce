@@ -12,5 +12,6 @@ import { AccessTokenGuard } from 'src/modules/auth/guards/access-token.guard';
     // { provide: APP_GUARD, useClass: RolesGuard },
   ],
   exports: [],
+  
 })
 export class CoreModule {}
