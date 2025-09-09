@@ -6,13 +6,12 @@ import {
     Post,
     Res,
     UseGuards,
-    Req, // ✅ 누락되었던 데코레이터 추가
+    Req, 
   } from '@nestjs/common';
   import { AuthService } from './auth.service';
   import { RegisterDto, LoginDto } from './dto/auth.dto';
   import { AccessTokenGuard } from './guards/access-token.guard';
   import { RefreshTokenGuard } from './guards/refresh-token.guard';
-  // ✅ decorator + isolatedModules 환경 대응: 타입 전용 import
   import type { Response, Request } from 'express';
   
   @Controller('auth')

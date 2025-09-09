@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostsRepository } from './repository/posts.repository';
+import { Post } from 'src/entities/posts/post.entity';
+import { Role } from 'src/constants/role';
 
 @Injectable()
 export class PostsService {
@@ -10,6 +12,19 @@ export class PostsService {
   async create(createPostDto: CreatePostDto) {
     const post = await this.postsRepository.create(createPostDto.toSchema());
     return post;
+  }
+
+  async remove(postId:Post['id'], requester: {sub: string; role: Role}) {
+    const post = await this.postsRepository.findOne(postId);
+    if (!post) throw new NotFoundException('post not found');
+
+    const isOwner = post.user?.id === requester.sub;
+    const isAdmin = requester.role === Role.Admin;
+
+    if (!isOwner && !isAdmin) throw new ForbiddenException('not allowed');
+
+    await this.postsRepository.remove(postId);
+    return {ok: true};
   }
 
   // findAll() {
